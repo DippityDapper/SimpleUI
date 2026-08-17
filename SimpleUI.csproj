@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SimpleUI</AssemblyName>
+    <RootNamespace>SimpleUI</RootNamespace>
+  </PropertyGroup>
+
+</Project>
