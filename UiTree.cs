@@ -27,7 +27,8 @@ namespace SimpleUI
 	/// <remarks>
 	/// Promotes the row-list pattern duplicated across SceneTreePanel / InspectorPanel / EditHistoryPanel
 	/// into one shared widget. The tree is a presentation of the caller's UiTreeItem graph — it does
-	/// not persist anything. Drag-reorder reparents in that in-memory graph and fires OnReordered;
+	/// not persist anything. Nesting is unbounded: Flatten walks Children recursively and indents by
+	/// Theme.TreeIndent per level. Drag-reorder reparents in that in-memory graph and fires OnReordered;
 	/// the caller decides whether that maps onto an on-disk document.
 	/// </remarks>
 	public sealed class UiTree : UiElement<UiTree>

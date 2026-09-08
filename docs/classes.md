@@ -248,14 +248,18 @@ public sealed class UiToggle : UiElement<UiToggle>
 public sealed class UiTextField : UiElement<UiTextField>
 {
     public InputField InputField { get; }
-    public static UiTextField Create(Transform parent, string placeholder = "",
-        string initialValue = "", UiTheme theme = null);
+    public string CurrentVariant { get; }
+    public static UiTextField Create(Transform parent, string defaultText = "",
+        UiTheme theme = null, bool multiline = false);
     public UiTextField OnChange(UnityAction<string> callback);
     public UiTextField OnEndEdit(UnityAction<string> callback);
-    public UiTextField SetValue(string text);
-    public string Value { get; }
+    public UiTextField SetText(string text);
+    public UiTextField WithVariants(IReadOnlyList<string> options, string initial,
+        Func<string, string> load, Action<string, string> commit);
 }
 ```
+
+`WithVariants` is opt-in and generic: SimpleUI does not know what an "option" means. It hangs a small chip (e.g. `en_US`) off the field's bottom-right corner; clicking it opens a compact popup listing `options`. Picking a new one calls `commit(previousOption, currentText)` (even mid-edit, so nothing typed is lost), then `SetText(load(newOption) ?? "")`. `OnChange`/`OnEndEdit` fire on that swap the same as any other text change -- `CurrentVariant` is already the new option by then, so a caller reacting to every change always writes to the right place. Reserves right/bottom padding on the field's text so it never renders under the chip. See `LokrLab`'s locale/loc-field usage for a concrete host (16 vanilla locale suffixes, backed by `localizations/<suffix>.txt` files).
 
 ### `UiDropdown`
 
@@ -367,7 +371,7 @@ public sealed class UiTree : UiElement<UiTree>
 }
 ```
 
-Indented tree: expand/collapse, Ctrl+click multi-select, drag a row onto another to reparent (`SetReorderable(false)` disables that — File Tree uses it so disk rows are not a document). `OnRowActivated` fires after selection on a left double-click. `IconKey` is shown as a text prefix; the tree does not load sprites. Presentation-only — the caller owns persistence. Row labels are single-line (`Overflow`, no wrap) so a long name is not clipped off the second line of the fixed-height row.
+Indented tree: expand/collapse, Ctrl+click multi-select, drag a row onto another to reparent (`SetReorderable(false)` disables that — File Tree uses it so disk rows are not a document). Nesting is unbounded — `Flatten` walks `Children` recursively and indents by `Theme.TreeIndent` per level; Encounter already uses three levels (root → folder → row), and a fourth (root → Variants → variant → combatant) needs no widget change. `OnRowActivated` fires after selection on a left double-click. `IconKey` is shown as a text prefix; the tree does not load sprites. Presentation-only — the caller owns persistence. Row labels are single-line (`Overflow`, no wrap) so a long name is not clipped off the second line of the fixed-height row.
 
 ### `UiContextMenu`
 

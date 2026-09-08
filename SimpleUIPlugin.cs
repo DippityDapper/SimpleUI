@@ -17,7 +17,7 @@ namespace SimpleUI
 		/// <summary>This plugin's display name.</summary>
 		public const string Name = "LoKR Simple UI";
 		/// <summary>This plugin's version string.</summary>
-		public const string Version = "1.2.11";
+		public const string Version = "1.2.14";
 
 		/// <summary>This plugin's shared BepInEx log source, set once in Awake().</summary>
 		internal static ManualLogSource Log;
